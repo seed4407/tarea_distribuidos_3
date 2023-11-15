@@ -1,14 +1,15 @@
 # Variables
-IMAGE_NAME = oms
-CONTAINER_NAME = oms
+IMAGE_NAME = vanguardia
+CONTAINER_NAME = vanguardia
 DOCKERFILE = dockerfile
 
 # Comandos
 build:
 	sudo docker build -t $(IMAGE_NAME) -f $(DOCKERFILE) .
 
-docker-oms:
-	sudo docker run -p 8080:80 $(CONTAINER_NAME)
+docker-vanguardia:
+	sudo docker run -p 8000:80 $(CONTAINER_NAME)
+	# sudo docker run -p 8080:80 $(CONTAINER_NAME)
 stop:
 	sudo docker stop $(CONTAINER_NAME)
 rm:

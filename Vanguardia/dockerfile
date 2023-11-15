@@ -2,9 +2,8 @@ FROM golang:latest
 
 WORKDIR /app
 
-COPY Data.txt .
 COPY go.mod .
-COPY OMS ./OMS
+COPY Vanguardia ./Vanguardia
 COPY proto ./proto
 
 EXPOSE 80
@@ -22,11 +21,11 @@ RUN protoc --go_out=./proto --go_opt=paths=import \
 
 # RUN go get github.com/streadway/amqp
 
-WORKDIR /app/OMS
+WORKDIR /app/Vanguardia
 
 RUN go build -o bin .
 
-ENTRYPOINT [ "/app/OMS/bin"]
+ENTRYPOINT [ "/app/Vanguardia/bin"]
 
 # Compiladores proto .pb y grpc.pb
 # protoc --go_out=. --go-grpc_out=. *.proto
