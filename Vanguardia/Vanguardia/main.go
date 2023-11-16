@@ -24,10 +24,11 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	// "strings"
+	"strings"
+	"encoding/json"
 	// "net" 
-    // "os"
-	// "bufio"
+    "os"
+	"bufio"
 	// "math/rand"
 	// "sync"
 	// "time"
@@ -67,9 +68,14 @@ func GetSoldados(nombre_sector string,nombre_base string) (*pb.RetornoCantSoldOs
 
 	reloj_almacenado := buscar_coincidencia(nombre_sector)
 
-	for i:=0;i<3;i++{
-		if(reloj_almacenado[i]>res.Reloj[i]){
-			log.Println("Error de consisntencia, leyendo dato mas antiguo")
+	if(len(reloj_almacenado) == 0){
+		log.Println("Primera vez consultado")
+		log.Printf("Cantidad Soldados:%s",fmt.Sprintf("%d",res.CantSoldadosOscuridad))
+	} else {
+		for i:=0;i<3;i++{
+			if(reloj_almacenado[i]>res.Reloj[i]){
+				log.Println("Error de consisntencia, leyendo dato mas antiguo")
+			}
 		}
 	}
 
@@ -82,8 +88,12 @@ func buscar_coincidencia(nombre_sector string) []int32{
 	var linea_data string
 	var file *os.File
 	var reloj []int32
-	
+	var err error
+
 	file, err = os.OpenFile(filePath, os.O_RDWR|os.O_CREATE, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
 	
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
@@ -97,7 +107,28 @@ func buscar_coincidencia(nombre_sector string) []int32{
 			return reloj
 		}
 	}
-	return ""
+	return nil
+}
+
+func escribir_informacion(nombre_sector string, reloj []int32) (bool,error){
+	filePath := "/app/Data.txt"
+
+	dato_escribir := nombre_sector + " "
+
+	file, err := os.OpenFile(filePath, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+
+	_, err = file.WriteString(dato_escribir + "\n")
+	if err != nil {
+		return false, err
+	}
+	
+	err = file.Sync()
+	if err != nil {
+		return false, err
+	}
+	file.Close()
+	return true,nil
+
 }
 
 func main() {
