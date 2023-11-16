@@ -48,6 +48,7 @@ var aux string
 
 type server struct {
 	pb.UnimplementedVanguardiaServer
+	pb.UnimplementedInformantesServer
 }
 
 func (s *server) GetSoldados(ctx context.Context, in *pb.ParametroSectorBase) (*pb.RetornoCantSoldOscuridadReloj, error) {
@@ -90,98 +91,26 @@ func (s *server) GetSoldados(ctx context.Context, in *pb.ParametroSectorBase) (*
 	return &pb.RetornoCantSoldOscuridadReloj{CantSoldadosOscuridad:respuesta.CantSoldadosOscuridad ,Reloj:respuesta.Reloj}, nil
 }
 
-// func (s *server) ConsultarNombres(ctx context.Context, in *pb.Estado_Persona) (*pb.Lista_Datos_DataNode, error) {
-//     var estado_persona = strings.ToUpper(in.Estado)
-// 	fmt.Println("Mensaje recibido de ONU",estado_persona)
-// 	var linea_data string
-// 	var id_1 []string
-// 	var id_2 []string
-
-// 	filePath := "/app/Data.txt"
-// 	var file *os.File
-
-// 	file, err = os.OpenFile(filePath, os.O_RDWR|os.O_CREATE, 0644)
-
-// 	scanner := bufio.NewScanner(file)
-//     for scanner.Scan() {
-// 		linea_data = scanner.Text() 
-//         // fmt.Println(linea_data)
-// 		if strings.Contains(linea_data, estado_persona) {
-// 			if strings.Contains(linea_data, " 1 ") {
-// 				id_1 = append(id_1,strings.Split(linea_data, " ")[0])
-// 			} else {
-// 				id_2 = append(id_2,strings.Split(linea_data, " ")[0])
-// 			}
-// 		}
-//     }
-
-// 	fmt.Println("Mensaje enviado a DataNode1",id_1)
-// 	fmt.Println("Mensaje enviado a DataNode2",id_2)
+func (s *server) Obtener_servidor_consultar_aleatorio(ctx context.Context, in *pb.ParamamtroVacio) (*pb.ServidorAConsultar, error) {
 	
-// 	if err = scanner.Err(); err != nil {
-//         log.Fatal(err)
-//     }
+	rand.Seed(time.Now().UnixNano())
+	var numeroAleatorio = rand.Intn(3)
 
-// 	file.Close()
+	if(numeroAleatorio == 0){
+		log.Printf("Enviar ip server 0")
+	} else if(numeroAleatorio == 1){
+		log.Printf("Enviar ip server 1")
+	} else{
+		log.Printf("Enviar ip server 2")
+	}
 
-// 	//llamar a funcion para solicitar a dataNode y se retorna lo que devuelva
+	var respuesta = &pb.ServidorAConsultar{
+		Ip:   "100.100.100",
+	}
 
-// 	conn, err := grpc.Dial("10.6.46.109:8080",grpc.WithInsecure())
+	return &pb.ServidorAConsultar{Ip:respuesta.Ip}, nil
+}
 
-// 	if err != nil {
-//         log.Fatal(err)
-//     }
-
-// 	defer conn.Close()
-
-// 	datanode := pb.NewDataNodeClient(conn)
-//     ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-//     defer cancel()
-//     respuesta1, err := datanode.Solicitud_Info_DataNode(ctx, &pb.Id{ListaId: id_1})
-//     if err != nil{
-//         log.Print("No hay respuesta del datanode1")
-//     }else{
-// 		fmt.Println("Mensaje recibido de DataNode1",respuesta1.Datos)
-//     }
-
-// 	conn, err = grpc.Dial("10.6.46.110:8080",grpc.WithInsecure())
-
-// 	if err != nil {
-//         log.Fatal(err)
-//     }
-
-// 	defer conn.Close()
-
-// 	datanode = pb.NewDataNodeClient(conn)
-//     ctx, cancel = context.WithTimeout(context.Background(), time.Second)
-//     defer cancel()
-//     respuesta2, err := datanode.Solicitud_Info_DataNode(ctx, &pb.Id{ListaId: id_2})
-//     if err != nil{
-//         log.Print("No hay respuesta del Datanode2")
-//     }else{
-// 		fmt.Println("Mensaje recibido de DataNode2",respuesta2.Datos)
-//     }
-
-// 	var respuesta []*pb.Datos_DataNode
-
-// 	for _, dato := range respuesta1.Datos {
-// 		persona := &pb.Datos_DataNode{
-// 			Nombre:   dato.Nombre,
-// 			Apellido: dato.Apellido,
-// 		}
-// 		respuesta = append(respuesta,persona)
-// 	}
-
-// 	for _, dato := range respuesta2.Datos {
-// 		persona := &pb.Datos_DataNode{
-// 			Nombre:   dato.Nombre,
-// 			Apellido: dato.Apellido,
-// 		}
-// 		respuesta = append(respuesta,persona)
-// 	}
-
-// 	return &pb.Lista_Datos_DataNode{Datos:respuesta}, nil
-// }
 
 
 func main() {

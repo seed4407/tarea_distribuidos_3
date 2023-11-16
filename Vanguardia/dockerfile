@@ -3,6 +3,7 @@ FROM golang:latest
 WORKDIR /app
 
 COPY go.mod .
+COPY Data.txt .
 COPY Vanguardia ./Vanguardia
 COPY proto ./proto
 
